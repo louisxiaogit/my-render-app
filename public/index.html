@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 測試頁面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API 測試頁面</h1>
+        <p>點擊下方按鈕，從您的 Render 應用程式的 `/api/items` 端點獲取資料。</p>
+        <button id="fetchDataBtn">獲取 Items 資料</button>
+        <h2>API 回應：</h2>
+        <pre id="apiResponse">點擊按鈕以載入資料...</pre>
+    </div>
+
+    <script>
+        document.getElementById('fetchDataBtn').addEventListener('click', async () => {
+            const responseContainer = document.getElementById('apiResponse');
+            responseContainer.textContent = '正在載入資料...';
+            try {
+                const response = await fetch('/api/items');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                responseContainer.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseContainer.textContent = `載入資料失敗: ${error.message}`;
+                console.error('Error fetching data:', error);
+            }
+        });
+    </script>
+</body>
+</html>

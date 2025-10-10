@@ -3,6 +3,9 @@ const { Pool } = require('pg');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// 提供靜態檔案 (例如 public/index.html)
+app.use(express.static('public'));
+
 // 連接到 PostgreSQL 資料庫
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -25,9 +28,10 @@ pool.connect((err, client, release) => {
   });
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello from Render with Database!');
-});
+// 根路徑現在會由 public/index.html 提供，所以這個可以移除或修改
+// app.get('/', (req, res) => {
+//   res.send('Hello from Render with Database!');
+// });
 
 // 新增一個 API 端點來獲取資料庫中的 items
 app.get('/api/items', async (req, res) => {
