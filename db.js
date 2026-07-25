@@ -13,8 +13,13 @@ function createDb(connectionString) {
   return {
     // pool.query() checks a connection out and returns it automatically, even
     // when the query throws — no manual connect()/release() to leak.
-    getItems: async () => {
-      const result = await pool.query('SELECT * FROM items');
+    // ORDER BY id keeps pagination stable; parameterized LIMIT/OFFSET avoid
+    // any string interpolation into the SQL.
+    getItems: async ({ limit = 50, offset = 0 } = {}) => {
+      const result = await pool.query(
+        'SELECT id, name FROM items ORDER BY id LIMIT $1 OFFSET $2',
+        [limit, offset],
+      );
       return result.rows;
     },
     close: () => pool.end(),
